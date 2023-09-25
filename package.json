@@ -30,5 +30,10 @@
     "gatsby-source-filesystem": "^5.11.0",
     "git-url-parse": "^13.1.0",
     "simple-git": "^3.16.0"
+  },
+  "overrides": {
+    "react-server-dom-webpack@0.0.0-experimental-c8b778b7f-20220825": {
+      "react": "^18.2.0"
+    }
   }
 }
