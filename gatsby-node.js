@@ -99,6 +99,8 @@ exports.sourceNodes = async (
     ignore: ignore
   });
 
+  reporter.info(repoFiles)
+
   const remoteId = createNodeId(`git-remote-${name}`);
 
   // Create a single graph node for this git remote.
@@ -118,6 +120,7 @@ exports.sourceNodes = async (
   );
 
   const createAndProcessNode = path => {
+    reporter.info("Path: " + path)
     return createFileNode(path, createNodeId, {
       name: name,
       path: localPath
