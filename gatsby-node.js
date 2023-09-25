@@ -74,7 +74,7 @@ exports.sourceNodes = async (
     createContentDigest,
     reporter
   },
-  { name, remote, branch, patterns = `**`, local }
+  { name, remote, branch, patterns = `**`, ignore = [], local }
 ) => {
   const programDir = store.getState().program.directory;
   const localPath = local || getCachedRepoPath(name, programDir);
@@ -95,7 +95,8 @@ exports.sourceNodes = async (
 
   const repoFiles = await fastGlob(patterns, {
     cwd: localPath,
-    absolute: true
+    absolute: true,
+    ignore: ignore
   });
 
   const remoteId = createNodeId(`git-remote-${name}`);
