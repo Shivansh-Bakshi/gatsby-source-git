@@ -6,7 +6,7 @@ function getCachedRepoPath(name, programDir) {
   return require("path").join(
     programDir,
     `.cache`,
-    `gatsby-source-git`,
+    `git-blogs`,
     name
   );
 }
@@ -73,7 +73,7 @@ exports.sourceNodes = async (
 ) => {
   const programDir = store.getState().program.directory;
   const localPath = local || getCachedRepoPath(name, programDir);
-  const parsedRemote = GitUrlParse(remote);
+  // const parsedRemote = GitUrlParse(remote);
 
   let repo;
   try {
@@ -81,12 +81,11 @@ exports.sourceNodes = async (
   } catch (e) {
     return reporter.error(e);
   }
-
-  parsedRemote.git_suffix = false;
-  parsedRemote.webLink = parsedRemote.toString("https");
-  delete parsedRemote.git_suffix;
-  let ref = await repo.raw(["rev-parse", "--abbrev-ref", "HEAD"]);
-  parsedRemote.ref = ref.trim();
+  // parsedRemote.git_suffix = false;
+  // parsedRemote.webLink = parsedRemote.toString("https");
+  // delete parsedRemote.git_suffix;
+  // let ref = await repo.raw(["rev-parse", "--abbrev-ref", "HEAD"]);
+  // parsedRemote.ref = ref.trim();
 };
 
 exports.onPreInit = async ({ reporter, emitter, store }, pluginOptions) => {
@@ -100,9 +99,9 @@ exports.onPreInit = async ({ reporter, emitter, store }, pluginOptions) => {
       // Attempt to empty dir if remove fails,
       // like when directory is mount point.
       await fs.remove(localPath).catch(() => fs.emptyDir(localPath))
-      reporter.verbose(`Removed gatsby-source-git cache directory: ${localPath}`);
+      reporter.verbose(`Removed git-blogs cache directory: ${localPath}`);
     } catch (e) {
-      reporter.error(`Failed to remove gatsby-source-git files.`, e);
+      reporter.error(`Failed to remove git-blogs files.`, e);
     }
   });
 }
