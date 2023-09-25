@@ -1,6 +1,5 @@
 const Git = require("simple-git");
-const fs = require(`fs-extra`)
-const GitUrlParse = require("git-url-parse");
+const fs = require(`fs-extra`);
 
 function getCachedRepoPath(name, programDir) {
   return require("path").join(
