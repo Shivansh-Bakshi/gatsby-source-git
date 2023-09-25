@@ -73,7 +73,6 @@ exports.sourceNodes = async (
 ) => {
   const programDir = store.getState().program.directory;
   const localPath = local || getCachedRepoPath(name, programDir);
-  const parsedRemote = GitUrlParse(remote);
 
   let repo;
   try {
@@ -81,11 +80,6 @@ exports.sourceNodes = async (
   } catch (e) {
     return reporter.error(e);
   }
-  parsedRemote.git_suffix = false;
-  parsedRemote.webLink = parsedRemote.toString("https");
-  delete parsedRemote.git_suffix;
-  let ref = await repo.raw(["rev-parse", "--abbrev-ref", "HEAD"]);
-  parsedRemote.ref = ref.trim();
 };
 
 exports.onPreInit = async ({ reporter, emitter, store }, pluginOptions) => {
