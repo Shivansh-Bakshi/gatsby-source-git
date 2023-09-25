@@ -26,7 +26,6 @@
   "homepage": "https://github.com/stevetweeddale/gatsby-source-git#readme",
   "dependencies": {
     "fs-extra": "^11.1.1",
-    "gatsby-source-filesystem": "^5.11.0",
     "simple-git": "^3.16.0"
   },
   "overrides": {
