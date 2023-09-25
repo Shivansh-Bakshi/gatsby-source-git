@@ -1,7 +1,5 @@
 const Git = require("simple-git");
-const fastGlob = require("fast-glob");
 const fs = require(`fs-extra`)
-const { createFileNode } = require("gatsby-source-filesystem/create-file-node");
 const GitUrlParse = require("git-url-parse");
 
 function getCachedRepoPath(name, programDir) {
@@ -68,13 +66,10 @@ async function getRepo(path, remote, branch) {
 
 exports.sourceNodes = async (
   {
-    actions: { createNode },
     store,
-    createNodeId,
-    createContentDigest,
     reporter
   },
-  { name, remote, branch, patterns = `**`, ignore = [], local }
+  { name, remote, branch, local }
 ) => {
   const programDir = store.getState().program.directory;
   const localPath = local || getCachedRepoPath(name, programDir);
@@ -92,50 +87,6 @@ exports.sourceNodes = async (
   delete parsedRemote.git_suffix;
   let ref = await repo.raw(["rev-parse", "--abbrev-ref", "HEAD"]);
   parsedRemote.ref = ref.trim();
-
-  const repoFiles = await fastGlob(patterns, {
-    cwd: localPath,
-    absolute: true,
-    ignore: ignore
-  });
-
-  reporter.info(repoFiles)
-
-  const remoteId = createNodeId(`git-remote-${name}`);
-
-  // Create a single graph node for this git remote.
-  // Filenodes sourced from it will get a field pointing back to it.
-  await createNode(
-    Object.assign(parsedRemote, {
-      id: remoteId,
-      sourceInstanceName: name,
-      parent: null,
-      children: [],
-      internal: {
-        type: `GitRemote`,
-        content: JSON.stringify(parsedRemote),
-        contentDigest: createContentDigest(parsedRemote)
-      }
-    })
-  );
-
-  const createAndProcessNode = path => {
-    reporter.info("Path: " + path)
-    return createFileNode(path, createNodeId, {
-      name: name,
-      path: localPath
-    }).then(fileNode => {
-      // Add a link to the git remote node
-      fileNode.gitRemote___NODE = remoteId;
-      // Then create the node, as if it were created by the gatsby-source
-      // filesystem plugin.
-      return createNode(fileNode, {
-        name: `gatsby-source-filesystem`
-      });
-    });
-  };
-
-  return Promise.all(repoFiles.map(createAndProcessNode));
 };
 
 exports.onPreInit = async ({ reporter, emitter, store }, pluginOptions) => {
